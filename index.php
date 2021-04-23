@@ -2,7 +2,45 @@
 session_start();
 require_once("FruitDBController.php");
 $db_handle = new FruitDBController();
-
+if(!empty($_GET["action"])) {
+	switch($_GET["action"]) {
+		case "add":
+			if(!empty($_POST["quantity"])) {
+				$qryProducts = $db_handle->runQuery("SELECT * FROM tblproducts WHERE productcode='" . $_GET["code"] . "'");
+				$itemArray = array($qryProducts[0]["ProductCode"]=>array('name'=>$qryProducts[0]["ProductName"], 'code'=>$qryProducts[0]["ProductCode"], 'quantity'=>$_POST["quantity"], 'price'=>$qryProducts[0]["Price"], 'image'=>$qryProducts[0]["imagepath"]));
+				if(!empty($_SESSION["cart_item"])) {
+					if(in_array($qryProducts[0]["ProductCode"],array_keys($_SESSION["cart_item"]))) {
+						foreach($_SESSION["cart_item"] as $k => $v) {
+								if($qryProducts[0]["ProductCode"] == $k) {
+									if(empty($_SESSION["cart_item"][$k]["quantity"])) {
+										$_SESSION["cart_item"][$k]["quantity"] = 0;
+									}
+									$_SESSION["cart_item"][$k]["quantity"] += $_POST["quantity"];
+								}
+						}
+					} else {
+						$_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
+					}
+				} else {
+					$_SESSION["cart_item"] = $itemArray;
+				}
+			}
+		break;
+		case "remove":
+			if(!empty($_SESSION["cart_item"])) {
+				foreach($_SESSION["cart_item"] as $k => $v) {
+						if($_GET["code"] == $k)
+							unset($_SESSION["cart_item"][$k]);				
+						if(empty($_SESSION["cart_item"]))
+							unset($_SESSION["cart_item"]);
+				}
+			}	
+		break;
+		case "empty":
+			unset($_SESSION["cart_item"]);
+		break;	
+	}
+}	
 ?>
 <HTML>
 <HEAD>
@@ -88,44 +126,4 @@ if(isset($_SESSION["cart_item"])){
 </div>
 </BODY>
 </HTML>
-<?php
-if(!empty($_GET["action"])) {
-	switch($_GET["action"]) {
-		case "add":
-			if(!empty($_POST["quantity"])) {
-				$qryProducts = $db_handle->runQuery("SELECT * FROM tblproducts WHERE productcode='" . $_GET["code"] . "'");
-				$itemArray = array($qryProducts[0]["ProductCode"]=>array('name'=>$qryProducts[0]["ProductName"], 'code'=>$qryProducts[0]["ProductCode"], 'quantity'=>$_POST["quantity"], 'price'=>$qryProducts[0]["Price"], 'image'=>$qryProducts[0]["imagepath"]));
-				if(!empty($_SESSION["cart_item"])) {
-					if(in_array($qryProducts[0]["ProductCode"],array_keys($_SESSION["cart_item"]))) {
-						foreach($_SESSION["cart_item"] as $k => $v) {
-								if($qryProducts[0]["ProductCode"] == $k) {
-									if(empty($_SESSION["cart_item"][$k]["quantity"])) {
-										$_SESSION["cart_item"][$k]["quantity"] = 0;
-									}
-									$_SESSION["cart_item"][$k]["quantity"] += $_POST["quantity"];
-								}
-						}
-					} else {
-						$_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
-					}
-				} else {
-					$_SESSION["cart_item"] = $itemArray;
-				}
-			}
-		break;
-		case "remove":
-			if(!empty($_SESSION["cart_item"])) {
-				foreach($_SESSION["cart_item"] as $k => $v) {
-						if($_GET["code"] == $k)
-							unset($_SESSION["cart_item"][$k]);				
-						if(empty($_SESSION["cart_item"]))
-							unset($_SESSION["cart_item"]);
-				}
-			}	
-		break;
-		case "empty":
-			unset($_SESSION["cart_item"]);
-		break;	
-	}
-}	
-?>
+
