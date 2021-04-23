@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `tblproducts` (
   `ProductCode` varchar(50) NOT NULL DEFAULT '0',
   `ProductName` varchar(50) NOT NULL DEFAULT '0',
   `Price` double(10,2) NOT NULL DEFAULT 0.00,
-  `imagepath` VARCHAR(100) NOT NULL,
+  `imagepath` VARCHAR(150) NOT NULL,
   PRIMARY KEY (`ProductID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
