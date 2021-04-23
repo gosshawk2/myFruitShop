@@ -15,6 +15,19 @@ class FruitDBController {
 		return $conn;
 	}
 	
+    function ExecSQLFile($SQLFile)
+    {
+        $query = file_get_contents($SQLFile);
+        $result = mysqli_query($this->conn,$query);
+        $stmt = $this->conn->prepare($query);
+        if ($stmt->execute()) {
+            echo "Success";
+        }
+        else {
+            echo "Failed";
+        }
+    }
+
 	function runQuery($query) {
 		$result = mysqli_query($this->conn,$query);
 		while($row=mysqli_fetch_assoc($result)) {
