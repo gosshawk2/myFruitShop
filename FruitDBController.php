@@ -21,10 +21,10 @@ class FruitDBController {
         $result = mysqli_query($this->conn,$query);
         $stmt = $this->conn->prepare($query);
         if ($stmt->execute()) {
-            echo "Success";
+            return "Success";
         }
         else {
-            echo "Failed";
+            return "Failed";
         }
     }
 
