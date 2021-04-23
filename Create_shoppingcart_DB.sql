@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS `shoppingcart`;
-CREATE DATABASE IF NOT EXISTS `shoppingcart`;
-USE `shoppingcart`;
+DROP DATABASE IF EXISTS `fruitcart`;
+CREATE DATABASE IF NOT EXISTS `fruitcart`;
+USE `fruitcart`;
 
 -- Dumping structure for table shoppingcart.tblproducts
 DROP TABLE IF EXISTS `tblproducts`;
